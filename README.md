@@ -2,9 +2,11 @@
 
 生成透明图片。
 
+- [预览](https://mymengyou.github.io/MakePictureTransparent/index.html)
+
 ## 难点
 
-1. 修改图片透明度。
+1. 调整图片透明度。
 2. 动态调整canvas的宽高。
 
 > 参考：
