@@ -1,6 +1,6 @@
 # MakePictureTransparent
 
-生成透明图片。
+生成透明图片（调整图片透明度）。
 
 - [预览](https://mymengyou.github.io/MakePictureTransparent/index.html)
 
