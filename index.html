@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>生成透明图片</title>
+  <title>生成透明图片（调整图片透明度）</title>
   <link rel="stylesheet" href="//unpkg.com/element-ui@2.13.0/lib/theme-chalk/index.css">
   <script src="//cdn.jsdelivr.net/npm/vue@2.6.11"></script>
   <script src="//unpkg.com/element-ui@2.13.0/lib/index.js"></script>
@@ -21,7 +21,7 @@
 
 <body>
   <div id="indexSPA" v-cloak>
-    <h1>生成透明图片</h1>
+    <h1>生成透明图片（调整图片透明度）</h1>
     <h2>源图片：（最多选5张）</h2>
     <el-upload
       action="#"
@@ -92,20 +92,25 @@
           console.log("fileList", fileList);
           this.files = fileList;
         },
-        // 预览图片加载完要撤销URL的资源占用，释放内存
-        handleImageLoaded: function(url) {
-          URL.revokeObjectURL(url);
+        // 不能在这时候撤销，不然会导致图片无法保存
+        // // 预览图片加载完要撤销URL的资源占用，释放内存
+        // handleImageLoaded: function(url) {
+        //   URL.revokeObjectURL(url);
+        // },
+
+        // 撤销URL的资源占用，释放内存。在清空结果前调用。
+        revokeUrls: function() {
+          for(var i = 0; i < this.result.length; i++) {
+            URL.revokeObjectURL(this.result[i]);
+          }
         },
         make: function() {
           console.log("files", this.files)
           if(!this.files || this.files.length <= 0) {
             return this.$message.warning("请先添加源图片");
           }
-          
-          // 先去掉canvas，方便后面调整宽度
-          this.imageWidth = 0;
-          this.imageHeight = 0;
 
+          this.revokeUrls(); // 清空结果前撤销URL的资源占用
           this.result = [];
           for(var i = 0; i < this.files.length; i++) {
             this.doTransfer(this.files[i], i);
@@ -136,7 +141,7 @@
               }
               ctx.putImageData(imageData, 0, 0); // 将数据重新绘制到画布上
 
-              // 使用URL.createObjectURL()根据文件流生成URL。图片加载完后需要使用URL.revokeObjectURL()释放。
+              // 使用URL.createObjectURL()根据文件流生成URL。之后需要使用URL.revokeObjectURL()释放。
               canvas.toBlob(function(blob){
                 var url = URL.createObjectURL(blob);
                 that.$set(that.result, index, url);
